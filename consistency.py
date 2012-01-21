@@ -12,10 +12,10 @@ def strip_common_fixes(a, b):
     """
     x = a[:]
     y = b[:]
-    while len(x) > 0 and x[0] == y[0]:
+    while len(x) > 0 and len(y) > 0 and x[0] == y[0]:
         del x[0]
         del y[0]
-    while len(x) > 0 and x[-1] == y[-1]:
+    while len(x) > 0 and len(y) > 0 and x[-1] == y[-1]:
         del x[-1]
         del y[-1]
     return (x, y)
@@ -28,12 +28,10 @@ def lower_case(x):
     >>> lower_case("Batch Gradient")
     'Batch Gradient'
     """
-    if len(x.split()) > 1:
-        return x
-    if len(x) == 1:
-        return x[0].lower()
-    else:
+    if len(x.split()) == 1:
         return x[0].lower() + "".join(x[1:])
+    else:
+        return x
 
 
 def consistency(s):
@@ -48,7 +46,7 @@ def consistency(s):
     mappings = defaultdict(set)
     # Map normalized ngrams
     for x in range(1, 10):
-        for ngram in ingrams(tokens, x, pad_left=True, pad_right=True, pad_symbol=""):
+        for ngram in ingrams(tokens, x):
             norm = "".join(x.lower() for x in ngram).strip(",. ").replace("-", "")
             source = " ".join(ngram).strip(",. ")
             mappings[norm].add(source)
