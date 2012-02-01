@@ -1,11 +1,12 @@
 import sys
 import string
 from collections import defaultdict
-import nltk
-nltk.download('punkt', quiet=True)
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.punkt import PunktSentenceTokenizer
 from nltk.util import ingrams, bigrams
+
+
+MAX_PHRASE_LENGTH = 10
 
 
 def strip_common_fixes(a, b):
@@ -92,7 +93,7 @@ def consistency(s):
             source = token.strip(",. ")
             mappings[norm].add(source)
         # Map normalized ngrams
-        for x in range(2, 10):
+        for x in range(2, MAX_PHRASE_LENGTH+1):
             for ngram in ingrams(tokens, x):
                 norm = canonicalize(ngram)
                 source = " ".join(ngram).strip(",. ")
@@ -121,7 +122,11 @@ def _test():
 
 
 def main():
-    mappings = consistency(open(sys.argv[1]).read())
+    if len(sys.argv) >= 2:
+        in_file = open(sys.argv[1])
+    else:
+        in_file = sys.stdin
+    mappings = consistency(in_file.read())
     # Output the mappings
     for (key, values) in sorted(mappings.items()):
         print key
