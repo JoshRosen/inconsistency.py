@@ -3,7 +3,7 @@ import string
 from collections import defaultdict
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.punkt import PunktSentenceTokenizer
-from nltk.util import ingrams, bigrams
+from nltk.util import ngrams, bigrams
 
 
 MAX_PHRASE_LENGTH = 10
@@ -94,7 +94,7 @@ def consistency(s):
             mappings[norm].add(source)
         # Map normalized ngrams
         for x in range(2, MAX_PHRASE_LENGTH+1):
-            for ngram in ingrams(tokens, x):
+            for ngram in ngrams(tokens, x):
                 norm = canonicalize(ngram)
                 source = " ".join(ngram).strip(",. ")
                 if len(source.split()) == x:
